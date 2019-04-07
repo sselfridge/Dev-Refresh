@@ -2,6 +2,8 @@
 let on_off_button = document.getElementById('on_off_button');
 
 let on; //toggle to keep track of if the extention is activated
+
+
 chrome.storage.sync.get(['on'], function (result) {
   if (result['on']) {
     on_off_button.innerHTML = 'Stop'

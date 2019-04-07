@@ -1,12 +1,16 @@
 'use strict';
-//Background.js Globals
-var curentTab = null; //current tab - refreshed on tabchange with onActiveChanged
-var paused = false; //is the extention paused? either by keyboard command or offscreen
-var userInactive = false;
-var on = false;
-var activeTabs = {};
-var badgeColor = 'red';
-var allowRefresh = false;
+const g = {
+  //Background.js Globals
+  paused : false, //is the extention paused? either by keyboard command or offscreen
+  curentTab : null, //current tab - refreshed on tabchange with onActiveChanged
+  userInactive : false,
+  on : false,
+  activeTabs : {},
+  badgeColor : 'red',
+  allowRefresh : false,
+  testProp: true,
+}
+
 
 chrome.runtime.onInstalled.addListener(function () {
 
@@ -26,28 +30,29 @@ chrome.runtime.onInstalled.addListener(function () {
 //TODO - check for active window as well
 chrome.tabs.onActiveChanged.addListener(function (tabId) {
   console.log(`Current Tab ID:${tabId}`);
-  curentTab = tabId;
+  g.curentTab = tabId;
 });
 
 
 chrome.storage.onChanged.addListener(function (obj) {
   console.log(obj);
+
   if (obj.on) {
     console.log(`On Switch Changed: ${obj.on.newValue}`);
     on = obj.on.newValue;
 
     if (on === true) {
-      activeTabs[curentTab] = true;
+      g.activeTabs[g.curentTab] = true;
     } else {
-      delete activeTabs[curentTab]
+      delete g.activeTabs[g.curentTab]
     }
-
-
   }
+
   if (obj.userInactive) {
     console.log(`User Inactive: ${obj.userInactive.newValue}`);
     userInactive = obj.userInactive.newValue;
   }
+
   if (obj.allowRefresh) {
     console.log(`Allow Refresh: ${obj.allowRefresh.newValue}`);
     allowRefresh = obj.allowRefresh.newValue;
@@ -68,34 +73,34 @@ chrome.commands.onCommand.addListener(function (command) {
 
 //check status and update icon accordingly
 setInterval(function () {
-  console.log(`Active Tabs`);
-  console.log(activeTabs);
-  console.log(`On: ${on}  Paused:${paused}  Inactive:${userInactive}  Allow:${allowRefresh}`);
+  // console.log(`Active Tabs`);
+  // console.log(g.activeTabs);
+  // console.log(`On: ${g.on}  Paused:${g.paused}  Inactive:${g.userInactive}  Allow:${g.allowRefresh}`);
 
-  if (on && activeTabs[curentTab]) {
-    if (paused) {
+  if (g.on && g.activeTabs[g.curentTab]) {
+    if (g.paused) { //pause overwrites other behavior as long as ex is on for this tab
       chrome.browserAction.setBadgeText({ text: 'Hold' });
       chrome.browserAction.setBadgeBackgroundColor({ color: 'orange' })
-      if (allowRefresh === true) {
-        allowRefresh = false;
+      if (g.allowRefresh === true) {
+        g.allowRefresh = false;
         chrome.storage.sync.set({ allowRefresh: false }, function () { });
       }
     } else {
 
-      if (userInactive) {
+      if (g.userInactive) {
         chrome.browserAction.setBadgeText({ text: 'Running' });
         chrome.browserAction.setBadgeBackgroundColor({ color: 'green' })
 
-        if (allowRefresh === false) {
-          allowRefresh = true;
+        if (g.allowRefresh === false) {
+          g.allowRefresh = true;
           chrome.storage.sync.set({ allowRefresh: true }, function () { });
         }
-      } else if (!userInactive) {
+      } else if (!g.userInactive) {
         chrome.browserAction.setBadgeText({ text: 'Stop' });
         chrome.browserAction.setBadgeBackgroundColor({ color: 'red' })
 
-        if (allowRefresh === true) {
-          allowRefresh = false;
+        if (g.allowRefresh === true) {
+          g.allowRefresh = false;
           chrome.storage.sync.set({ allowRefresh: false }, function () { });
         }
       }
@@ -114,3 +119,5 @@ setInterval(function () {
 // Context menus	contextMenus	Allows app or extension developers 
 // to add items to the context menu in Chrome. To open the context menu, users right-click a webpage.
 // https://developer.chrome.com/extensions/desktopCapture
+
+
