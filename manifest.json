@@ -1,6 +1,6 @@
 {
   "name": "Chill Out Refresh: For building HTML",
-  "version": "0.5",
+  "version": "0.55",
   "description": "Put your refresh on hold ",
   "permissions": [
     "storage",
@@ -24,7 +24,7 @@
     "persistent": true
   },
   "commands": {
-    "toggle-refresh": {
+    "toggle-pause": {
       "suggested_key": {
         "default": "Alt+S",
         "mac": "Alt+S"
