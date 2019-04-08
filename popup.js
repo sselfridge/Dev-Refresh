@@ -1,11 +1,23 @@
 'use strict';
 let on_off_button = document.getElementById('on_off_button');
 
-let on; //toggle to keep track of if the extention is activated
+var on; //toggle to keep track of if the extention is activated
+var currentTab;
+
+chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+  currentTab = tabs[0].id;
+});
 
 
-chrome.storage.sync.get(['on'], function (result) {
-  if (result['on']) {
+
+chrome.storage.sync.get(['on','activeTabs'], function (result) {
+  console.log("Result:");
+  console.log(result);
+  const currentTabActive = result['activeTabs'][currentTab];
+  console.log(`Current: ${currentTab}  ActiveTabs:}`);
+  console.log(result['activeTabs']);
+
+  if (result['on'] && currentTabActive) {
     on_off_button.innerHTML = 'Stop'
     on = true;
   } else {
@@ -25,7 +37,6 @@ on_off_button.onclick = function (element) {
     chrome.storage.sync.set({ on: true }, function () {
       on_off_button.innerHTML = 'Stop'
       on = true;
-      chrome.browserAction.setBadgeText({ text: '' });
     });
 
 

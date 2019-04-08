@@ -18,7 +18,7 @@ chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ userInactive: false }, function () { });  //bool
   chrome.storage.sync.set({ on: false }, function () { });            //bool
   // chrome.storage.sync.set({ paused: false }, function () { });        //bool
-  // chrome.storage.sync.set({ activeTabs: {} }, function () { });       //array of active tabs - tab only active when turned on via popup on that tab
+  chrome.storage.sync.set({ activeTabs: {} }, function () { });       //array of active tabs - tab only active when turned on via popup on that tab
 
   chrome.storage.sync.set({ allowRefresh: false }, function () { });  //used to make sure we only refresh tabs extention was turned on for
   //this should be the only db req we make from the content.js
@@ -39,23 +39,24 @@ chrome.storage.onChanged.addListener(function (obj) {
 
   if (obj.on) {
     console.log(`On Switch Changed: ${obj.on.newValue}`);
-    on = obj.on.newValue;
+    g.on = obj.on.newValue;
 
-    if (on === true) {
+    if (g.on === true) {
       g.activeTabs[g.curentTab] = true;
     } else {
+      if(g.activeTabs[g.curentTab] === undefined) console.error(`No active tab for: ${g.currentTab}`);
       delete g.activeTabs[g.curentTab]
     }
   }
 
   if (obj.userInactive) {
     console.log(`User Inactive: ${obj.userInactive.newValue}`);
-    userInactive = obj.userInactive.newValue;
+    g.userInactive = obj.userInactive.newValue;
   }
 
   if (obj.allowRefresh) {
     console.log(`Allow Refresh: ${obj.allowRefresh.newValue}`);
-    allowRefresh = obj.allowRefresh.newValue;
+    g.allowRefresh = obj.allowRefresh.newValue;
   }
 })
 
@@ -65,7 +66,7 @@ chrome.commands.onCommand.addListener(function (command) {
   console.log(`Command: ${command} has been activated!`);
   if (command !== 'toggle-pause') return; //only command we should be getting, ignore others
 
-  paused = !paused;
+  g.paused = !g.paused;
 
 });
 
@@ -75,8 +76,9 @@ chrome.commands.onCommand.addListener(function (command) {
 setInterval(function () {
   // console.log(`Active Tabs`);
   // console.log(g.activeTabs);
-  // console.log(`On: ${g.on}  Paused:${g.paused}  Inactive:${g.userInactive}  Allow:${g.allowRefresh}`);
-
+  console.log(`On: ${g.on}  Paused:${g.paused}  Inactive:${g.userInactive}  Allow:${g.allowRefresh}`);
+  console.log(`Current Tab:${g.curentTab} ActiveTabs:`);
+  console.log(g.activeTabs);
   if (g.on && g.activeTabs[g.curentTab]) {
     if (g.paused) { //pause overwrites other behavior as long as ex is on for this tab
       chrome.browserAction.setBadgeText({ text: 'Hold' });
