@@ -18,21 +18,40 @@ window.onblur = function () {
 //     console.log(isTabActive ? 'Active!!' : 'Inactive');
 // }, 1000)
 
+var allowRefresh;
+
+
 
 //maybe agrigate all the seperate calls in the background and make one call here
-function refreshPage() {
-    console.log(`Refresh Page`);
+// function refreshPage() {
+//     console.log(`Refresh Page`);
+//     chrome.storage.onChanged.addListener(function (obj) {
+//         console.log(`new value for somethign!`);
+//         console.log(obj);
+//         if (obj.allowRefresh) {
+//             allowRefresh = obj.allowRefresh.newValue;
+//         }
+//     })
 
-    chrome.storage.sync.get(['allowRefresh'], function (result) {
-        allowRefresh = result['allowRefresh'];
-        console.log(`AllowRefresh: ${allowRefresh}`);
-        if (allowRefresh) {
-            location.reload(true)
-        }
+//     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
-    });
-    setTimeout(refreshPage, 2000);
-}
+//         // since only one tab should be active and in the current window at once
+//         // the return variable should only have one entry
+//         var activeTab = tabs[0];
+//         var activeTabId = activeTab.id; // or do whatever you need
+//         console.log(`ActiveTab: ${activeTabId}`);
+//      });
 
-setTimeout(refreshPage, 2000);
+//     chrome.storage.sync.get(['allowRefresh'], function (result) {
+//         allowRefresh = result['allowRefresh'];
+//         console.log(`AllowRefresh: ${allowRefresh}`);
+//         if (allowRefresh) {
+//             location.reload(true)
+//         }
+
+//     });
+//     setTimeout(refreshPage, 2000);
+// }
+
+// setTimeout(refreshPage, 2000);
 

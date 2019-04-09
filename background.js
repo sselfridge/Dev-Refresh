@@ -1,29 +1,39 @@
 'use strict';
 const g = {
   //Background.js Globals
-  paused : false, //is the extention paused? either by keyboard command or offscreen
-  curentTab : null, //current tab - refreshed on tabchange with onActiveChanged
-  userInactive : false,
-  on : false,
-  activeTabs : {},
-  badgeColor : 'red',
-  allowRefresh : false,
+  paused: false, //is the extention paused? either by keyboard command or offscreen
+  curentTab: null, //current tab - refreshed on tabchange with onActiveChanged
+  userInactive: false,
+  on: false,
+  activeTabs: new Set(),
+  badgeColor: 'red',
+  allowRefresh: false,
   testProp: true,
 }
 
 
 chrome.runtime.onInstalled.addListener(function () {
 
-  //defaults for local data
-  chrome.storage.sync.set({ userInactive: false }, function () { });  //bool
-  chrome.storage.sync.set({ on: false }, function () { });            //bool
-  // chrome.storage.sync.set({ paused: false }, function () { });        //bool
-  chrome.storage.sync.set({ activeTabs: {} }, function () { });       //array of active tabs - tab only active when turned on via popup on that tab
+  // //defaults for local data
+  // chrome.storage.sync.set({ userInactive: false }, function () { });  //bool
+  // chrome.storage.sync.set({ on: false }, function () { });            //bool
+  // // chrome.storage.sync.set({ paused: false }, function () { });        //bool
+  // chrome.storage.sync.set({ activeTabs: {} }, function () { });       //array of active tabs - tab only active when turned on via popup on that tab
 
-  chrome.storage.sync.set({ allowRefresh: false }, function () { });  //used to make sure we only refresh tabs extention was turned on for
-  //this should be the only db req we make from the content.js
+  // chrome.storage.sync.set({ allowRefresh: false }, function () { });  //used to make sure we only refresh tabs extention was turned on for
+  // //this should be the only db req we make from the content.js
 
-  // chrome.storage.sync.set({ color: 'green' }, function () { });       //string color of the icon badge - TODO: remove as logic for this should be covered by other controls
+  // // chrome.storage.sync.set({ color: 'green' }, function () { });       //string color of the icon badge - TODO: remove as logic for this should be covered by other controls
+
+  const newStorage = {
+    userInactive: false,
+    on: false,
+    activeTabs: new Set(),
+    allowRefresh: false,
+  }
+
+  chrome.storage.sync.set(newStorage, function () { });  //used to make sure we only refresh tabs extention was turned on for
+
 
 });
 
@@ -40,13 +50,6 @@ chrome.storage.onChanged.addListener(function (obj) {
   if (obj.on) {
     console.log(`On Switch Changed: ${obj.on.newValue}`);
     g.on = obj.on.newValue;
-
-    if (g.on === true) {
-      g.activeTabs[g.curentTab] = true;
-    } else {
-      if(g.activeTabs[g.curentTab] === undefined) console.error(`No active tab for: ${g.currentTab}`);
-      delete g.activeTabs[g.curentTab]
-    }
   }
 
   if (obj.userInactive) {
@@ -58,6 +61,12 @@ chrome.storage.onChanged.addListener(function (obj) {
     console.log(`Allow Refresh: ${obj.allowRefresh.newValue}`);
     g.allowRefresh = obj.allowRefresh.newValue;
   }
+
+  if (obj.activeTabs) {
+    console.log(`Active Tabs: ${obj.activeTabs.newValue}`);
+    g.activeTabs = obj.activeTabs.newValue;
+  }
+
 })
 
 //actions on hot key
@@ -65,11 +74,21 @@ chrome.storage.onChanged.addListener(function (obj) {
 chrome.commands.onCommand.addListener(function (command) {
   console.log(`Command: ${command} has been activated!`);
   if (command !== 'toggle-pause') return; //only command we should be getting, ignore others
-
   g.paused = !g.paused;
 
 });
 
+
+//check for needed refresh
+setInterval(function () {
+  if (g.allowRefresh && g.activeTabs.has(g.curentTab))
+    // chrome.tabs.executeScript({
+    //   code: 'location.reload(true)'
+    // });
+    console.log('PAGE WOULD REFRESH NOW!!!!!');
+
+
+}, 2000)
 
 
 //check status and update icon accordingly
@@ -77,9 +96,9 @@ setInterval(function () {
   // console.log(`Active Tabs`);
   // console.log(g.activeTabs);
   console.log(`On: ${g.on}  Paused:${g.paused}  Inactive:${g.userInactive}  Allow:${g.allowRefresh}`);
-  console.log(`Current Tab:${g.curentTab} ActiveTabs:`);
-  console.log(g.activeTabs);
-  if (g.on && g.activeTabs[g.curentTab]) {
+  // console.log(`Current Tab:${g.curentTab} ActiveTabs:`);
+
+  if (g.on) {
     if (g.paused) { //pause overwrites other behavior as long as ex is on for this tab
       chrome.browserAction.setBadgeText({ text: 'Hold' });
       chrome.browserAction.setBadgeBackgroundColor({ color: 'orange' })
