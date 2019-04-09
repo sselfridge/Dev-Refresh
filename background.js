@@ -5,7 +5,7 @@ const g = {
   curentTab: null, //current tab - refreshed on tabchange with onActiveChanged
   userInactive: false,
   on: false,
-  activeTabs: new Set(),
+  activeTabs: [],  //can't pass a set through the chrome DB for some reason - keeping in as array
   badgeColor: 'red',
   allowRefresh: false,
   testProp: true,
@@ -25,14 +25,21 @@ chrome.runtime.onInstalled.addListener(function () {
 
   // // chrome.storage.sync.set({ color: 'green' }, function () { });       //string color of the icon badge - TODO: remove as logic for this should be covered by other controls
 
+
   const newStorage = {
     userInactive: false,
     on: false,
-    activeTabs: new Set(),
+    activeTabs: [66,66],
     allowRefresh: false,
   }
 
-  chrome.storage.sync.set(newStorage, function () { });  //used to make sure we only refresh tabs extention was turned on for
+  // newStorage['activeTabs'].add(5);
+
+  console.log('Add tab');
+  console.log( newStorage['activeTabs']);
+  chrome.storage.sync.set(newStorage, function () {
+    console.log('"defaults set in SYNC storage": ');
+  });  //used to make sure we only refresh tabs extention was turned on for
 
 
 });
