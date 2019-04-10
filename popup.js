@@ -1,80 +1,66 @@
 'use strict';
 let on_off_button = document.getElementById('on_off_button');
 
-var on; //toggle to keep track of if the extention is activated
-var currentTab;
-var activeTabSet;
+let currentTab;
+let currentTabActive;
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
   currentTab = tabs[0].id;
 });
 
 
-//get status when first turns on
-chrome.storage.sync.get(['on', 'activeTabs', 'userInactive', 'allowRefresh'], function (result) {
-  console.log("Result:");
-  console.log(result);
-  console.log(`Active Tab set from DB:`);
-  activeTabSet = new Set(result['activeTabs']);
-  activeTabSet.add(5);
-  console.log(activeTabSet);
-  const currentTabActive = activeTabSet.has(currentTab);
+//get status when first opening popup turns on
+chrome.storage.sync.get(['activeTabs'], function (result) {
+
+  const activeTabs = result['activeTabs'];
+  currentTabActive = activeTabs.includes(currentTab);
   console.log(`Current: ${currentTab}  ActiveTabs:${result['activeTabs']} Has?${currentTabActive}`);
 
-  if (result['on'] && currentTabActive) {
+  if (currentTabActive) {
     on_off_button.innerHTML = 'Stop'
-    on = true;
   } else {
     on_off_button.innerHTML = 'Start'
-    on = false;
   }
 });
 
 on_off_button.onclick = function (element) {
-  let newObj = {};
-  if (on) {
+  console.log(`Button Clicked`);
+  chrome.storage.sync.get(['activeTabs'], function (result) {
+    let activeTabs = result['activeTabs'];
+    console.log(`Button Clicked: Current:${currentTab} Active Tabs:${activeTabs}`);
+    currentTabActive = activeTabs.includes(currentTab);
 
-    activeTabSet.delete(currentTab);
+    let newObj = {};
+    if (currentTabActive) {
 
-    newObj = {
-      on: false,
-      activeTabs: Array.from(activeTabSet),
+      console.log(`Active Tabs ${activeTabs}`);
+
+      //Remove current tab from activetabs array
+      let indexOf = activeTabs.indexOf(currentTab)
+      activeTabs.splice(indexOf, 1);
+
+
+      console.log(`Active Tabs After: ${activeTabs}`);
+      newObj = {
+        activeTabs: activeTabs,
+      }
+
+
+      chrome.storage.sync.set(newObj, function () {
+        on_off_button.innerHTML = 'Start'
+      });
+    } else { //turn extention on for current tab
+      activeTabs.push(currentTab);
+      newObj = {
+        activeTabs: activeTabs,
+      }
+
+
+      chrome.storage.sync.set(newObj, function () {
+        on_off_button.innerHTML = 'Stop'
+      });
     }
-
-
-    chrome.storage.sync.set(newObj, function () {
-      on_off_button.innerHTML = 'Start'
-      on = false;
-    });
-  } else { //turn extention on for current tab
-    activeTabSet.add(currentTab);
-
-    newObj = {
-      on: true,
-      activeTabs: Array.from(activeTabSet),
-    }
-
-
-    chrome.storage.sync.set(newObj, function () {
-      on_off_button.innerHTML = 'Stop'
-      on = true;
-    });
-
-  }
-
-
-
-
-
+  })
 }
-
-window.onblur = function(){
-
-
-
-
-}
-
-
 
 //code for selecting the current tab for activating extention

@@ -1,14 +1,13 @@
-isTabActive = false; //used for debugging in setInterval
 
 window.onfocus = function () {
-    isTabActive = true;
+    // isTabActive = true;
     chrome.storage.sync.set({ userInactive: false }, function () { });
     console.log(`User Active`);
 };
 
 window.onblur = function () {
-    //TODO - track edge that user leaves the screen, if right, don't restart refreshing
-    isTabActive = false;
+    // //TODO - track edge that user leaves the screen, if right, don't restart refreshing
+    // isTabActive = false;
     chrome.storage.sync.set({ userInactive: true }, function () { });
     console.log(`User Inactive`);
 };
@@ -17,10 +16,6 @@ window.onblur = function () {
 // setInterval(function () {
 //     console.log(isTabActive ? 'Active!!' : 'Inactive');
 // }, 1000)
-
-var allowRefresh;
-
-
 
 //maybe agrigate all the seperate calls in the background and make one call here
 // function refreshPage() {
