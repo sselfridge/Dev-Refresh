@@ -1,6 +1,6 @@
 {
   "name": "Chill Out Refresh: For building HTML",
-  "version": "0.55",
+  "version": "0.9.0",
   "description": "Put your refresh on hold ",
   "permissions": [
     "storage",

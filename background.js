@@ -5,7 +5,7 @@ let paused = false; //is the extention paused? either by keyboard command or off
 let curentTab = null; //current tab - refreshed on tabchange with onActiveChanged
 let userInactive = false;
 let activeTabs = [];  //can't pass a set through the chrome DB for some reason - keeping in as array
-
+let lastRefreshTime; //track time since last refresh
 
 
 chrome.runtime.onInstalled.addListener(function () {
@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(function () {
   }
 
   chrome.storage.sync.set(newStorage, function () {
-    console.log('Defaults set in chrome SYNC storage');
+    console.debug('Defaults set in chrome SYNC storage');
   });
 
 
@@ -26,8 +26,9 @@ chrome.runtime.onInstalled.addListener(function () {
 //keep the global curretTab updated with the current tab in focus in chrome
 chrome.tabs.onActiveChanged.addListener(function (tabId) {
   //TODO - check for active window as well
-  console.log(`Current Tab ID:${tabId}`);
+  console.debug(`Current Tab ID:${tabId}`);
   curentTab = tabId;
+  checkTab(); //check for badge color when tab changes
 });
 
 
@@ -37,49 +38,60 @@ chrome.tabs.onActiveChanged.addListener(function (tabId) {
 chrome.storage.onChanged.addListener(function (obj) {
 
   if (obj.userInactive) {
-    console.log(`User Inactive updated: ${obj.userInactive.newValue}`);
+    console.debug(`User Inactive updated: ${obj.userInactive.newValue}`);
     userInactive = obj.userInactive.newValue;
   }
 
   if (obj.activeTabs) {
-    console.log(`Active Tabs updated: ${obj.activeTabs.newValue}`);
+    console.debug(`Active Tabs updated: ${obj.activeTabs.newValue}`);
     activeTabs = obj.activeTabs.newValue;
   }
 
+  //placing these in event driven
+  checkTab();
+  // checkRefresh();
 })
 
 //actions on hot key
 // toggle pause - makes badge color orange
 chrome.commands.onCommand.addListener(function (command) {
   if (command !== 'toggle-pause') return; //only command we should be getting, ignore others
-  console.log(`Pause Command: ${command} has been activated`);
+  console.debug(`Pause Command: ${command} has been activated`);
   paused = !paused;
+  checkTab(); //check for badge color when we add colors
 });
 
 
 //check for needed refresh every 2 seconds
-setInterval(function () {
-  if (curentTab == null) return; // this is running in popup.html with no current tab - this should prevent that.
+setInterval(checkRefresh, 2000);
 
-  if (activeTabs.includes(curentTab) && !paused && userInactive) {  ///
-    chrome.tabs.executeScript({
+function checkRefresh() {
+  if (curentTab == null) return; // setInterval causes the function to run in the popup.js as well
+  // since popup.html has no tab info, this prevents anything from executing
+
+  console.debug(`ActiveTabs:${activeTabs} Tab:${curentTab} paused:${paused} Inactive${userInactive}`);
+  if (activeTabs.includes(curentTab) && !paused && userInactive) {
+    chrome.tabs.executeScript(curentTab, {
       code: 'location.reload(true)'
     });
+
   } else {
     //If we not refreshing, whats the state of the control variables
-    console.log(`No refresh: ActiveTab:${activeTabs} Current:${curentTab} UserInactive:${userInactive}`);
+    console.debug(`No refresh: ActiveTab:${activeTabs} Current:${curentTab} UserInactive:${userInactive}`);
   }
-}, 2000)
+}
 
 
 //check status and update badge color and text
-setInterval(function () {
+//need to call this whenever a change action happens:
+function checkTab() {
+  console.debug(`Checking Tab for color:`);
   if (curentTab == null) return; // this is running in popup.html with no current tab - this should prevent that.
-  console.log(`Paused:${paused}  Inactive:${userInactive} Tab:${curentTab}`);
+  console.debug(`Paused:${paused}  Inactive:${userInactive} Tab:${curentTab}`);
   let currentTabActive = activeTabs.includes(curentTab);
 
   if (currentTabActive) {
-    if (paused) { 
+    if (paused) {
       chrome.browserAction.setBadgeText({ text: 'Hold' });
       chrome.browserAction.setBadgeBackgroundColor({ color: 'orange' })
     } else {
@@ -93,9 +105,9 @@ setInterval(function () {
       }
     }
   } else if (!currentTabActive && curentTab != null) { //extention off for this tab, remove badge
-    console.log(`Current Tab Inactive: remove badge: ${curentTab}`);
+    console.debug(`Current Tab Inactive: remove badge: ${curentTab}`);
     chrome.browserAction.setBadgeText({ text: '' });
   } else {
-    console.log(`We SHOULDN"T HIT THIS!!!`);
+    console.debug(`We SHOULDN"T HIT THIS!!!`);
   }
-}, 1000)
+}
