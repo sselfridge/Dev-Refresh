@@ -5,12 +5,11 @@ let paused = false; //is the extention paused? either by keyboard command or off
 let curentTab = null; //current tab - refreshed on tabchange with onActiveChanged
 let userInactive = false;
 let activeTabs = [];  //can't pass a set through the chrome DB for some reason - keeping in as array
-let lastRefreshTime; //track time since last refresh
 
 
 chrome.runtime.onInstalled.addListener(function () {
 
-  // //defaults for local data
+  //defaults for local data
   const newStorage = {
     userInactive: false,
     activeTabs: [],
@@ -47,9 +46,9 @@ chrome.storage.onChanged.addListener(function (obj) {
     activeTabs = obj.activeTabs.newValue;
   }
 
-  //placing these in event driven
+  // checkTab needs to be called anytime there's a change that 
+  // the badge could needto be updated for
   checkTab();
-  // checkRefresh();
 })
 
 //actions on hot key
@@ -58,7 +57,7 @@ chrome.commands.onCommand.addListener(function (command) {
   if (command !== 'toggle-pause') return; //only command we should be getting, ignore others
   console.debug(`Pause Command: ${command} has been activated`);
   paused = !paused;
-  checkTab(); //check for badge color when we add colors
+  checkTab(); //update badge color when pause command is recieved
 });
 
 
