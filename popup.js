@@ -32,22 +32,19 @@ on_off_button.onclick = function (element) {
     let activeTabs = result['activeTabs'];
 
     currentTabActive = activeTabs.includes(currentTab);
-
+    
+    console.debug(`Popup.js----Active Tabs ${activeTabs} CurrentTabActive?:${currentTabActive}`);
    
     if (currentTabActive) {
-
-      console.log(`Active Tabs ${activeTabs}`);
 
       //Remove current tab from activetabs array
       let indexOf = activeTabs.indexOf(currentTab)
       activeTabs.splice(indexOf, 1);
 
-
-      console.log(`Active Tabs After: ${activeTabs}`);
+      console.debug(`Active Tabs After: ${activeTabs}`);
       let newObj = {
         activeTabs: activeTabs,
       }
-
 
       chrome.storage.sync.set(newObj, function () {
         on_off_button.innerHTML = 'Start'
