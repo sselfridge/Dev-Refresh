@@ -13,6 +13,7 @@ chrome.runtime.onInstalled.addListener(function () {
   const newStorage = {
     userInactive: false,
     activeTabs: [],
+    paused: false,
   }
 
   chrome.storage.sync.set(newStorage, function () {
@@ -51,6 +52,11 @@ chrome.storage.onChanged.addListener(function (obj) {
   if (obj.activeTabs) {
     console.debug(`Active Tabs updated: ${obj.activeTabs.newValue}`);
     activeTabs = obj.activeTabs.newValue;
+  }
+
+  if(obj.paused){
+    console.debug(`Paused updated: ${obj.paused.newValue}`);
+    paused = obj.paused.newValue;
   }
 
   //update current tab whenever the storage is changed
