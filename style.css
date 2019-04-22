@@ -1,0 +1,40 @@
+body {
+    background-color: #0d82ff;
+}
+
+button {
+    padding: .7rem 2rem;
+    border: none;
+    width: 150px;
+    border-radius: 6px;
+    font-size: 1.5rem;
+    text-transform: capitalize;
+    line-height: .6;
+    letter-spacing: 1px;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    margin: 20px 15px;
+    display: block;
+}
+
+button:focus {outline:none;}
+
+
+.green{
+    background-color: #328f1d
+}
+.red{
+    background-color: red
+}
+#pause_button{
+    background-color: orange
+}
+
+
+button:active {
+    border-radius: 0px;
+}
+
+#pauseSubText {
+    font-size: .5em;
+}
