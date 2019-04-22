@@ -54,7 +54,7 @@ chrome.storage.onChanged.addListener(function (obj) {
     activeTabs = obj.activeTabs.newValue;
   }
 
-  if(obj.paused){
+  if (obj.paused) {
     console.debug(`Paused updated: ${obj.paused.newValue}`);
     paused = obj.paused.newValue;
   }
@@ -73,7 +73,15 @@ chrome.commands.onCommand.addListener(function (command) {
   if (command !== 'toggle-pause') return; //only command we should be getting, ignore others
   console.debug(`Pause Command: ${command} has been activated`);
   paused = !paused;
-  checkTab(); //update badge color when pause command is recieved
+
+  let newState = {
+    paused: paused,
+  }
+  chrome.storage.sync.set(newState, function () {
+    pause_button.innerHTML = newText;
+    checkTab(); //update badge color when pause command is recieved
+    return;
+  });
 });
 
 
@@ -109,21 +117,21 @@ function checkRefresh() {
 //need to call this whenever a change action happens:
 function checkTab() {
   console.debug(`Checking Tab for color:`);
-  if (currentTab == null) { return;  } // this is running in popup.html with no current tab - this should prevent that.
+  if (currentTab == null) { return; } // this is running in popup.html with no current tab - this should prevent that.
   console.debug(`Paused:${paused}  Inactive:${userInactive} Tab:${currentTab} ActiveTab:${activeTabs}`);
   let currentTabActive = activeTabs.includes(currentTab);
 
   if (currentTabActive) {
     if (paused) {
-      chrome.browserAction.setBadgeText({ text: 'Hold' });
+      chrome.browserAction.setBadgeText({ text: "Hold" });
       chrome.browserAction.setBadgeBackgroundColor({ color: 'orange' })
     } else {
       if (userInactive) {
-        chrome.browserAction.setBadgeText({ text: 'Running' });
+        chrome.browserAction.setBadgeText({ text: "Refreshing" });
         chrome.browserAction.setBadgeBackgroundColor({ color: 'green' })
 
       } else if (!userInactive) {
-        chrome.browserAction.setBadgeText({ text: 'Stop' });
+        chrome.browserAction.setBadgeText({ text: "Stop" }); //, tabId: currentTab - if we need to put on one tab only
         chrome.browserAction.setBadgeBackgroundColor({ color: 'red' })
       }
     }
