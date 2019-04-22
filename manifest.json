@@ -30,6 +30,13 @@
         "mac": "Alt+S"
       },
       "description": "Pause Page Refresh"
+    },
+    "toggle-refresh": {
+      "suggested_key": {
+        "default": "Alt+A",
+        "mac": "Alt+A"
+      },
+      "description": "Toggle Page Refresh on/off"
     }
   },
   "icons": {
