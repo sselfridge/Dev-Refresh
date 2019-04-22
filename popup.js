@@ -40,6 +40,22 @@ chrome.storage.sync.get(['activeTabs', 'paused'], function (result) {
   }
 });
 
+//watch paused and update resume/pause button as needed
+chrome.storage.onChanged.addListener(function (obj) {
+  if (obj.paused) {
+    console.log(`Paused Change in POPUP`);
+    console.debug(`Paused updated: ${obj.paused.newValue}`);
+    paused = obj.paused.newValue;
+  }
+  if (paused) {
+    pause_button.innerHTML = pausedHtml;
+  } else {
+    pause_button.innerHTML = resumeHtml;
+  }
+
+})
+
+
 // turn refreshing on or off for the current tab
 on_off_button.onclick = function (element) {
   chrome.storage.sync.get(['activeTabs'], function (result) { //fetch active tabs from storage
