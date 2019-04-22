@@ -8,7 +8,7 @@ Click the extention icon and click 'Start' to activate on the curruent tab.
 
 Refresh can be paused by clicking the pause button in the extention menu or hitting Alt + S.  This is useful if you need to inspect the webpage in chrome dev tools but don't want to stop refreshing this page.
 
-###Extention has 3 states:
+### Extention has 3 states:
 
 1. Refreshing - Green Badge: Page will refresh every 2 seconds on the active tab
 2. Stopped - Red Badge: Refreshing stopped until focus shifts from the active tab
