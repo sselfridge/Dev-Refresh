@@ -1,5 +1,6 @@
 {
-  "name": "Chill Out Refresh: For building HTML",
+  "name": "Dev Refresh: For building HTML",
+  "short_name": "Dev Refresh",
   "version": "0.0.0.1",
   "description": "Put your refresh on hold ",
   "permissions": [
