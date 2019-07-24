@@ -78,7 +78,6 @@ chrome.commands.onCommand.addListener(function (command) {
     paused: paused,
   }
   chrome.storage.sync.set(newState, function () {
-    pause_button.innerHTML = newText;
     checkTab(); //update badge color when pause command is recieved
     return;
   });
