@@ -1,14 +1,14 @@
-# Pause Refresh
+# Dev Refresh
 
-The purpose of this extention is to save switching-programs-time when creating HTML projects and still allowing the developer to interact with the project without being interrupted by an unexpected refresh, but still able to watch their progress while working in their text editor.
+The purpose of this extension is to save switching-programs-time when creating HTML projects and still allowing the developer to interact with the project without being interrupted by an unexpected refresh, but still able to watch their progress while working in their text editor.
 
 ## Usage
 
-Click the extention icon and click 'Start' to activate on the curruent tab.  
+Click the extension icon and click 'Start' to activate on the current tab.  
 
-Refresh can be paused by clicking the pause button in the extention menu or hitting Alt + S.  This is useful if you need to inspect the webpage in chrome dev tools but don't want to stop refreshing this page.
+Refresh can be paused by clicking the pause button in the extension menu or hitting Alt + S.  This is useful if you need to inspect the webpage in chrome dev tools but don't want to stop refreshing this page.
 
-### Extention has 3 states:
+### extension has 3 states:
 
 1. Refreshing - Green Badge: Page will refresh every 2 seconds on the active tab
 
@@ -18,14 +18,14 @@ Refresh can be paused by clicking the pause button in the extention menu or hitt
 
       ![stopped](https://user-images.githubusercontent.com/44272343/56481118-3f25c500-6472-11e9-8025-46b189bf0d3a.png)
 
-3. Paused - Orange Badge: Refreshing paused.  Toggle pause with shortcut Alt + S or in extention menu
+3. Paused - Orange Badge: Refreshing paused.  Toggle pause with shortcut Alt + S or in extension menu
 
       ![paused](https://user-images.githubusercontent.com/44272343/56481115-3e8d2e80-6472-11e9-86db-6620ed419ea5.png)
 
 ### Usage Notes:
 Will only refresh 1 tab at a time.  It must be the top tab in the most recently used chrome windows.
 
-If you have multiple chrome windows open the icon badge will appear on all of them but will on refresh on the tab that the extention was activated on.
+If you have multiple chrome windows open the icon badge will appear on all of them but will on refresh on the tab that the extension was activated on.
 
 ## Troubleshooting
 
