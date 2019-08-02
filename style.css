@@ -41,6 +41,8 @@ button:active {
     font-size: .5em;
 }
 
-/* #localLink {
+#localLink {
+    font-size: 2em;
+    color: white;
     display: none;
-} */
+}
