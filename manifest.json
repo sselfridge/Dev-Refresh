@@ -1,7 +1,7 @@
 {
   "name": "Dev Refresh",
   "short_name": "Dev Refresh",
-  "version": "0.0.1.04",
+  "version": "0.0.1.05",
   "description": "Put your refresh on hold ",
   "permissions": ["storage", "activeTab"],
   "background": {
