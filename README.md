@@ -1,3 +1,16 @@
+# To Access Local Files:
+
+Extensions by default aren't allowed to access the locals files at all.  To enable this on local files you must allow it in the chromes extension.
+
+1. Right Click the Dev Refresh extension icon then click 'Manage Extensions'
+
+![manage](https://user-images.githubusercontent.com/44272343/62403406-c25eb880-b541-11e9-8ea0-bd7c91dbe632.png)
+
+2. Ensure 'Allow Access to file URL's is enabled
+
+![allowaccess](https://user-images.githubusercontent.com/44272343/62403408-c25eb880-b541-11e9-98ee-c419cc110339.png)
+
+
 # Dev Refresh
 
 The purpose of this extension is to save switching-programs-time when creating HTML projects and still allowing the developer to interact with the project without being interrupted by an unexpected refresh, but still able to watch their progress while working in their text editor.
