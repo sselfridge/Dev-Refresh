@@ -17,19 +17,21 @@ button {
     display: block;
 }
 
-button:focus {outline:none;}
+button:focus {
+    outline: none;
+}
 
-
-.green{
+.green {
     background-color: #328f1d
 }
-.red{
+
+.red {
     background-color: red
 }
-#pause_button{
+
+#pause_button {
     background-color: orange
 }
-
 
 button:active {
     border-radius: 0px;
