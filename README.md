@@ -1,6 +1,6 @@
 # To Access Local Files:
 
-Extensions by default aren't allowed to access the locals files at all.  To enable this on local files you must allow it in the chromes extension.
+Extensions by default aren't allowed to access the locals files at all.  To enable this on local files you must allow it in the chrome extension settings.
 
 1. Right Click the Dev Refresh extension icon then click 'Manage Extensions'
 
