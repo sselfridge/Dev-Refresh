@@ -7,6 +7,7 @@ let userInactive = false;
 let activeTabs = [];  //can't pass a set through the chrome DB for some reason - keeping in as array
 
 
+
 chrome.runtime.onInstalled.addListener(function () {
 
   //defaults for local data
@@ -70,6 +71,7 @@ chrome.storage.onChanged.addListener(function (obj) {
 //actions on hot key
 // toggle pause - makes badge color orange
 chrome.commands.onCommand.addListener(function (command) {
+  console.log("Command Recieved");
   if (command !== 'toggle-pause') return; //only command we should be getting, ignore others
   console.debug(`Pause Command: ${command} has been activated`);
   paused = !paused;
